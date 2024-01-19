@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/NotesListFragment">
+
+    <fragment
+        android:id="@+id/NotesListFragment"
+        android:name="ru.otus.mynotes.list.NotesListFragment"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_notes_list">
+
+        <action
+            android:id="@+id/action_NotesListFragment_to_NotesDetailFragment"
+            app:destination="@id/NotesDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/NotesDetailFragment"
+        android:name="ru.otus.mynotes.detail.NotesDetailFragment"
+        android:label=""
+        tools:layout="@layout/fragment_notes_detail">
+        <argument
+            android:name="noteId"
+            app:argType="long"
+            android:defaultValue="@null"/>
+    </fragment>
+</navigation>
