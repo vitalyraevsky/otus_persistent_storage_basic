@@ -4,11 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import ru.otus.mynotes.Note
-import ru.otus.mynotes.NotesRepository
+import ru.otus.mynotes.MemNotesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import ru.otus.mynotes.NotesRepository
 import java.util.*
 
 class NotesDetailViewModel(
@@ -20,8 +21,10 @@ class NotesDetailViewModel(
 
     init {
         noteId?.let {
-            val note = repository.get(noteId)
-            _viewState.value = note
+            viewModelScope.launch {
+                val note = repository.get(noteId)
+                _viewState.value = note
+            }
         }
     }
 
