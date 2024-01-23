@@ -27,7 +27,7 @@ object PreferenceProvider {
     }
 
     fun getColumnCount(): Flow<Int> = dataStore.data.mapNotNull { preferences ->
-        preferences[keyColumnCount]
+        preferences[keyColumnCount] ?: DEF_COLUMN_COUNT
     }
 
 }
