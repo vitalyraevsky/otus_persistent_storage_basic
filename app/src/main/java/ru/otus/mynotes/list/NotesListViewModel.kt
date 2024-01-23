@@ -14,24 +14,27 @@ class NotesListViewModel(
     private val repository: NotesRepository = NotesRepository,
     private val preferences: PreferenceProvider = PreferenceProvider
 ) : ViewModel() {
-    private val _viewState : MutableStateFlow<NotesListViewState>
+    private val _viewState : MutableStateFlow<NotesListViewState> = MutableStateFlow(
+        NotesListViewState(
+            notes = emptyList(),
+            columnCount = 2
+        )
+    )
 
     val viewState: Flow<NotesListViewState> get() = _viewState
 
     init {
-        val columnCount = preferences.getColumnCount()
-        val state = NotesListViewState(
-            notes = emptyList(),
-            columnCount = columnCount
-        )
-
-        _viewState = MutableStateFlow(state)
+        viewModelScope.launch {
+            preferences.getColumnCount().collect {
+                _viewState.value = _viewState.value.copy(columnCount = it)
+            }
+        }
         loadNotes()
     }
 
     private fun loadNotes() {
         viewModelScope.launch {
-            val notes = repository.getAllNotes().collect {
+            repository.getAllNotes().collect {
                 _viewState.value = _viewState.value.copy(notes = it)
             }
         }
@@ -39,7 +42,9 @@ class NotesListViewModel(
 
     fun onColumnCountChanged(count: Int) {
         _viewState.value = _viewState.value.copy(columnCount = count)
-        preferences.setColumnCount(count)
+        viewModelScope.launch {
+            preferences.setColumnCount(count)
+        }
     }
 
     fun onViewResumed() {
